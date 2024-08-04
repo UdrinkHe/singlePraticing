@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/qweather-icons@1.3.0/font/qweather-icons.css">
+    <link rel='stylesheet' type='text/css' media='screen' href='./../css/mobileVersion.css'>
+</head>
+<body>
+    <div id="phoneBG"></div>
+    <div id="app">
+        <div class="searchBar"><!--搜索栏-->
+            <input type="text" v-model="searchCity" placeholder="请输入要搜索的城市">
+            <button @click="searchWeather" >搜索</button>
+        </div>
+        <div class="currentTime"><!--当前地区时间-->
+            <div class="weatherTypePhone"><!--天气类型:手机版本-->
+                <div><i :class="cityMain.weatherTypeIcon"></i></div>
+                {{cityMain.weatherType}} 
+            </div>
+            <div>深圳</div>
+            <div>09:03</div>
+            <div>2024年8月23日</div>
+        </div>
+        <div class="weatherMain"><!--当天详细天气状况-->
+            <div class="tempAndSun"><!--气温日出日落-->
+                <div>24°C</div>
+                <div>
+                    <span>最低:{{cityMain.minTemp}}</span>
+                    <span>最高:{{cityMain.maxTemp}}</span>
+                </div>
+                <div>
+                    <div class="sunRAandS">
+                        <img src="./../icon/sunRise.png">
+                            <br class="phoneVersion">日出<br>
+                            {{cityMain.sunRise}}
+                    </div>
+                    <div class="sunRAandS">
+                        <img src="./../icon/sunSet.png">
+                        <br class="phoneVersion">日落<br>
+                        {{cityMain.sunSet}}
+                    </div>
+                </div>
+            </div>
+            <div class="weatherType"><!--天气类型-->
+                <div><i :class="cityMain.weatherTypeIcon"></i></div>
+                {{cityMain.weatherType}} 
+            </div>
+            <div class="otherAttribute"><!--湿度、风速、气压、紫外线-->
+                <div><img src="./../icon/humidity.png"><br><span>湿度</span><br>{{cityMain.humidity}}</div>
+                <div><img src="./../icon/windSpeed.png"><br><span>风速</span><br>{{cityMain.windSpeed}}</div>
+                <div><img src="./../icon/pressure.png"><br><span>气压</span><br>{{cityMain.pressure}}</div>
+                <div><img src="./../icon/uv.png"><br><span>紫外线</span><br>{{cityMain.uv}}</div>
+            </div>
+        </div>
+        <div class="fiveDaySimpleBox">
+            <div>未来五天：</div>
+            <template v-for="item in fiveDayLike">
+                <div>
+                    <div><i :class='item.weatherIcon'></i></div>
+                    <div>{{item.averageTemp}}</div>
+                    <div>{{item.dayOfWeekCH}}，{{item.todayBefore}}天后</div>
+                </div>
+            </template>
+        </div><!--近五天天气-->
+        <div class="laterHourlyBox">
+            <div>未来十二小时：</div>
+            <template v-for="item in hourlyLike">
+                <div>
+                    <div>{{item.time}}</div>
+                    <div>
+                        <i :class="item.weatherTypeIcon"></i>
+                    </div>
+                    <div>
+                        {{item.averageTemp}}
+                    </div>
+                    <div>
+                        <img :src="'./../icon/'+item.windDirectionIcon+'.png'">
+                    </div>
+                    <div>
+                        {{item.windSpeed}}
+                    </div>
+                </div>
+            </template>
+        </div><!--接下来几小时天气-->
+    </div>
+    
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src='./../js/mobileVersion.js'></script>
+</html>
