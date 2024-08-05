@@ -13,20 +13,20 @@
     <div id="app">
         <div class="searchBar"><!--搜索栏-->
             <input type="text" v-model="searchCity" placeholder="请输入要搜索的城市">
-            <button @click="searchWeather" >搜索</button>
+            <button @click="getWeatherMain" >搜索</button>
         </div>
         <div class="currentTime"><!--当前地区时间-->
             <div class="weatherTypePhone"><!--天气类型:手机版本-->
                 <div><i :class="cityMain.weatherTypeIcon"></i></div>
                 {{cityMain.weatherType}} 
             </div>
-            <div>深圳</div>
-            <div>09:03</div>
-            <div>2024年8月23日</div>
+            <div>{{currentCity}}</div>
+            <div>{{currentTime}}</div>
+            <div>{{currentDate}}</div>
         </div>
         <div class="weatherMain"><!--当天详细天气状况-->
             <div class="tempAndSun"><!--气温日出日落-->
-                <div>24°C</div>
+                <div>{{cityMain.nowTemp}}</div>
                 <div>
                     <span>最低:{{cityMain.minTemp}}</span>
                     <span>最高:{{cityMain.maxTemp}}</span>
