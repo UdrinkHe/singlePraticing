@@ -92,7 +92,10 @@ new Vue({
         ]
     },
     methods:{   //和风天气用户key:b38053db3dee4ae39586a04fbff4ff1c
-        getWeatherMain(){
+        toSearchCity(){ //根据键盘输入的城市名搜索相关天气信息
+            this.getWeatherMainByName(this.searchCity);
+        },
+        getWeatherMainByName(locationName){
             let locationId=0;
             const mykey='b38053db3dee4ae39586a04fbff4ff1c'
             let that=this;
@@ -100,11 +103,11 @@ new Vue({
                 method:'get',
                 url:'https://geoapi.qweather.com/v2/city/lookup',//根据城市名字查询城市id
                 params:{
-                    location:this.searchCity,     //无结果是404
+                    location:locationName,     //无结果是404
                     key:mykey
                 }
             }).then((respose)=>{//用箭头函数可以使下文this指向上文
-                console.log(this.searchCity)
+                console.log(locationName)
                 console.log(respose.data)
                 let data=respose.data;
                 console.log(data.location)
@@ -113,9 +116,9 @@ new Vue({
                 }
                 else{
                     for(let i in data.location){
-                        if(data.location[i].name===this.searchCity){
+                        if(data.location[i].name===locationName){
                             console.log('搜寻成功,id为'+data.location[i].id)
-                            this.currentCity=this.searchCity;
+                            this.currentCity=locationName;
                             locationId=data.location[i].id;//找到城市或区id之后查找详细天气状况
                         }
                     }
@@ -229,5 +232,44 @@ new Vue({
             console.log(this.hourlyLike)
         },
     },
+    mounted() {
+        const mykey='b38053db3dee4ae39586a04fbff4ff1c';
+        let that=this;
+        function showPositionAndWeather(position)
+        {
+            axios({
+                methods:'get',
+                url:'https://geoapi.qweather.com/v2/city/lookup',
+                                    params:{
+                                        key:mykey,
+                                        location:''+position.coords.longitude.toFixed(2)+','+position.coords.latitude.toFixed(2)
+                                    }
+                }
+            ).then((res)=>{
+                if(res.data.code==200)
+                {
+                    that.getWeatherMainByName(res.data.location[0].name);       
+                }
+                else
+                {
+                    alert('请求失败，刷新页面重试')
+                }
+            })
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert('用户拒绝地址请求');
+                    break;
+            }
+        }
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPositionAndWeather, showError)
+        } 
+        else {
+            console.log('当前浏览器不支持定位');
+        }
+    }
     }
 )
