@@ -10,8 +10,8 @@
         <div>
             <div>
                 <div class="nameFontSize">{{baseInfo.name}}</div>
-                <div>求职意向: 仓库文员</div>
-                <div>期望薪资: 6-7k</div>
+                <div>求职意向: {{positionView}}</div>
+                <div>期望薪资: {{positionSalary}}</div>
             </div>
             <div>
                 <div class="baseInfoItem">
@@ -147,7 +147,9 @@ props:{
     personalAbility:Array,
     education:Array,
     workEx:Array,
-    projectEx:Array
+    projectEx:Array,
+    positionView:String,
+    positionSalary:String
 },
 data(){
     return{

@@ -3,7 +3,8 @@
     <div id="blackBlock" v-show="isLooking" @click="disPreview()"> 
     </div> 
     <previewPage v-show="isLooking" :baseInfo="baseInfo" :personalAbility="personalAbility"
-    :education="education" :workEx="workEx" :projectEx="projectEx"></previewPage>
+    :education="education" :workEx="workEx" :projectEx="projectEx" :positionView='positionView'
+    :positionSalary="positionSalary"></previewPage>
     <div id="resumeMenu">
         <div>
             <div>简历目录</div>
@@ -17,6 +18,10 @@
     </div>
     <div id="resumeInfo">
         <div class="funcionBar"><!--功能栏-->
+            <el-upload class="avatar-uploader" action="#" :show-file-list="false" :on-change="uploadData" accept=".json">
+            <div><i class="el-icon-upload"></i><span>导入数据</span></div>
+            </el-upload>
+            <div @click="saveData()"><i class="el-icon-download"></i><span>导出数据</span></div>
             <div @click="toPreview()"><i class="el-icon-view"></i><span>预览</span></div>
         </div>
         <div class="contentBlock"><!--内容区-->
@@ -104,7 +109,9 @@
                         <div v-else class="infoShow"> 
                             {{++index+'.'+item.info}}
                             <div class="editorAdelete">
-                                <i class="el-icon-edit"></i>
+                                <i class="el-icon-delete"></i>
+                                <span @click="deleteOne(personalAbility,item.id)">删除</span>
+                                <i style="margin-left: 10px;" class="el-icon-edit"></i>
                                 <span @click="toEditor('personalAbility',item.id)">修改</span>
                             </div>
                         </div>
@@ -143,7 +150,9 @@
                         <div v-else class="infoShow"> 
                             {{++index+'.'+item.info+'('+item.type+')'+'  '+item.salary}}<i style="color: red;" v-if="item.favourite" class="el-icon-star-on"></i>
                             <div class="editorAdelete">
-                                <i class="el-icon-edit"></i>
+                                <i class="el-icon-delete"></i>
+                                <span @click="deleteOne(expectedPosition,item.id)">删除</span>
+                                <i style="margin-left: 10px;" class="el-icon-edit"></i>
                                 <span @click="toEditor('expectedPosition',item.id)">修改</span>
                             </div>
                         </div>
@@ -202,7 +211,9 @@
                             </div>
                             <div class="longContent"><span v-html="item.experience"></span></div>
                             <div class="editorAdelete">
-                                <i class="el-icon-edit"></i>
+                                <i class="el-icon-delete"></i>
+                                <span @click="deleteOne(education,item.id)">删除</span>
+                                <i style="margin-left: 10px;" class="el-icon-edit"></i>
                                 <span @click="toEditor('education',item.id)">修改</span>
                             </div>
                         </div>
@@ -263,7 +274,9 @@
                             </div>
                             <div>核心技术:{{item.coreTech}}</div>
                             <div class="editorAdelete">
-                                <i class="el-icon-edit"></i>
+                                <i class="el-icon-delete"></i>
+                                <span @click="deleteOne(projectEx,item.id)">删除</span>
+                                <i style="margin-left: 10px;" class="el-icon-edit"></i>
                                 <span @click="toEditor('projectEx',item.id)">修改</span>
                             </div>
                         </div>
@@ -322,7 +335,9 @@
                                 <span v-html="item.accomplishment"></span>
                             </div>
                             <div class="editorAdelete">
-                                <i class="el-icon-edit"></i>
+                                <i class="el-icon-delete"></i>
+                                <span @click="deleteOne(workEx,item.id)">删除</span>
+                                <i style="margin-left: 10px ;" class="el-icon-edit"></i>
                                 <span @click="toEditor('workEx',item.id)">修改</span>
                             </div>
                         </div>
@@ -350,6 +365,8 @@
 
 <script>
 import previewPage from './previewPage.vue';
+import FileSaver from 'file-saver';
+
 export default {
 name: 'personalInfo',
 components: {
@@ -357,13 +374,13 @@ components: {
 },
 data(){
     return{
-        isLooking:true,
+        isLooking:false,
         baseInfo:{
-            name:'何小军',
-            phone:'17875868367',
-            location:'花果山水帘洞福地',
-            email:'1237461141@qq.com',
-            birthday:'2010.10.10',
+            name:'',
+            phone:'',
+            location:'',
+            email:'',
+            birthday:'',
             profile:''
         },
         isBaseInfoE:false,
@@ -408,70 +425,21 @@ data(){
         experienceC:'',
         //个人优势
         personalAbility:[
-            {
-                id:0,
-                info:'有责任心，不会推卸责任',
-                isEditor:false
-            },
-            {
-                id:1,
-                info:'经常锻炼有体力',
-                isEditor:false
-            }
+        
         ],
         //期待岗位
         expectedPosition:[
-            {
-                id:0,
-                info:'前端程序员',
-                type:'全职',//全、兼职
-                salary:'6-7k',
-                favourite:true,
-                isEditor:false
-            },
-            {
-                id:1,
-                info:'后端程序员',
-                salary:'7-8k',
-                type:'全职',
-                favourite:false,
-                isEditor:false
-            },
-            {
-                id:2,
-                info:'服务员',
-                salary:'4-5k',
-                type:'兼职',
-                favourite:false,
-                isEditor:false
-            }
+        
         ],
-        education:[{
-            id:0,
-            schoolName:'惠州学院',//
-            educationSystem:'全日制',
-            diploma:'本科',
-            major:'软件工程',
-            timeFromY:'2018',
-            timeFromM:'9',
-            timeToY:'2022',
-            timeToM:'6',
-            experience:'在校经历:<br/>&nbsp;&nbsp;&nbsp;&nbsp;心理委员：负责传达院级心理部门的通知，协助其开展关于心理学时获取的实践活动。作为班干部编写月度班级日志，策划过中秋节送礼和教师节班聚活动，受到同学们一致好评。<br/>&nbsp;&nbsp;&nbsp;&nbsp;毕设群管：负责帮助毕设导师联系小组成员，汇集群里的问题并反馈。认真落实群里每一位学员的毕业设计阶段性工作的完成与论文格式的准确。<br/>在校荣誉：1.19-20年、20-21年学习优秀生奖金 2.19-20年优秀班干部 3.21-22年优秀团员',
-            isEditor:false
-            }
+        positionView:'',
+        positionSalary:'',
+        education:[
+        
         ],
         educationDiploma:['初中及以下','中专/中技','高中','大专','本科','硕士','博士'],
         educationSystem:['全日制','非全日制'],
         projectEx:[
-            {
-                id:0,
-                isEditor:false,
-                projectName:'天天消消乐',
-                info:'天<br/>天<br/>',
-                timeFrom:'2018.6',
-                timeTo:'2022.4',
-                coreTech:'html js css'
-            }
+        
         ],
         projectNameA:'',
         infoA:'',
@@ -484,16 +452,7 @@ data(){
         coreTechC:'',
 
         workEx:[
-            {
-                id:0,
-                isEditor:false,
-                companyName:'朴朴超市兼职补货员',
-                positionName:'阿伟演员',
-                info:'&nbsp;&nbsp;&nbsp;&nbsp;负责到店货品的上架、盘点、整理、过期处理工作，协助拣货人员寻找货品；清理场地，维持货架整齐、通道畅通干净；对售后物品进行回库的登记处理等工作。',
-                accomplishment:'获得金马奖',
-                workTimeForm:'2023.3',
-                workTimeTo:'2023.6'
-            }
+      
         ],
         companyNameA:'',
         positionNameA:'',
@@ -510,6 +469,12 @@ data(){
 },
 methods:{
     toPreview(){
+        for(let i = 0;i < this.expectedPosition.length; i++){
+            if(this.expectedPosition[i].favourite){
+                this.positionView = this.expectedPosition[i].info
+                this.positionSalary = this.expectedPosition[i].salary
+            }
+        }
         this.isLooking = true
     },
     disPreview(){
@@ -610,6 +575,21 @@ methods:{
                 this.personalAbilityAddInfo=''
             }
             else if(this.addBlock=='expectedPosition'){
+                if(this.exPositionAddFav){
+                    for(let i = 0;i < this.expectedPosition.length;i++){
+                        if(this.expectedPosition[i].favourite){
+                            let upData = this.expectedPosition[i]
+                            upData.favourite = false
+                            this.expectedPosition.splice(i,1,upData)
+                            this.$message({
+                                showClose: true,
+                                message: '主选职位只能有一个，已变更为新增项',
+                                type: 'warning'
+                            });
+                        }
+                    }
+                }
+                    
                 let maxIndex=-1;
                 for(let i=0;i<this.expectedPosition.length;i++){
                     if(this.expectedPosition[i].id>maxIndex)
@@ -627,6 +607,7 @@ methods:{
                 this.exPositionAddInfo=''
                 this.exPositionAddSalaryLow=''
                 this.exPositionAddSalaryHigh=''
+               
             }
             else if(this.addBlock == 'education'){
                 let maxIndex = -1;
@@ -782,6 +763,20 @@ methods:{
             this.personalAbility.splice(newData[0],1,newData[1]) 
         }
         else if(this.changingBlock=='expectedPosition'){
+            if(this.exPositionFavC){
+                    for(let i = 0;i < this.expectedPosition.length;i++){
+                        if(this.expectedPosition[i].favourite){
+                            let upData = this.expectedPosition[i]
+                            upData.favourite = false
+                            this.expectedPosition.splice(i,1,upData)
+                            this.$message({
+                                showClose: true,
+                                message: '主选职位只能有一个，已变为修改项',
+                                type: 'warning'
+                            });
+                        }
+                    }
+                }
             let newData = JSON.parse(JSON.stringify(this.oneItemEditorStatus(this.expectedPosition,itemId)))
             newData[1].info = this.exPositionInfoC
             newData[1].type = this.exPositionTypeC?'全职':'兼职'
@@ -821,6 +816,39 @@ methods:{
             newData[1].workTimeTo = this.workDateC[1].getFullYear()+'.'+(this.workDateC[1].getMonth()+1)
             this.workEx.splice(newData[0],1,newData[1])
         }
+    },
+    deleteOne(dataSet,itemId){
+            for(let i = 0;i < dataSet.length;i++){
+                if(itemId == dataSet[i].id){
+                    dataSet.splice(i,1)
+                }
+            }
+    },
+    saveData(){
+        let saveData = {};
+        saveData.baseInfo = this.baseInfo
+        saveData.expectedPosition = this.expectedPosition
+        saveData.workEx  = this.workEx
+        saveData.education =  this.education
+        saveData.projectEx = this.projectEx
+        saveData.personalAbility =  this.personalAbility
+        let data = JSON.stringify(saveData);
+        let blob = new Blob([data], { type: "application/json" });
+        FileSaver.saveAs(blob, `简历数据.json`);
+    },
+    uploadData(data){
+        console.log(data)
+        let reader = new FileReader()
+        reader.readAsText(data.raw,'UTF-8')
+        reader.onload = (evt) => { //读取文件完毕执行此函数
+        let dataJson = JSON.parse(evt.target.result)
+        this.baseInfo = dataJson.baseInfo
+        this.expectedPosition = dataJson.expectedPosition
+        this.workEx = dataJson.workEx
+        this.projectEx = dataJson.projectEx
+        this.education = dataJson.education
+        this.personalAbility = dataJson.personalAbility
+      }
     }
 }
 }
