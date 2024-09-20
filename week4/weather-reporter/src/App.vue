@@ -24,12 +24,12 @@
                 </div>
                 <div>
                     <div class="sunRAandS">
-                        <img src="./../icon/sunRise.png">
+                        <img src="./assets/sunRise.png">
                             <br class="phoneVersion">日出<br>
                             {{cityMain.sunRise}}
                     </div>
                     <div class="sunRAandS">
-                        <img src="./../icon/sunSet.png">
+                        <img src="./assets/sunSet.png">
                         <br class="phoneVersion">日落<br>
                         {{cityMain.sunSet}}
                     </div>
@@ -40,10 +40,10 @@
                 {{cityMain.weatherType}} 
             </div>
             <div class="otherAttribute"><!--湿度、风速、气压、紫外线-->
-                <div><img src="./../icon/humidity.png"><br><span>湿度</span><br>{{cityMain.humidity}}</div>
-                <div><img src="./../icon/windSpeed.png"><br><span>风速</span><br>{{cityMain.windSpeed}}</div>
-                <div><img src="./../icon/pressure.png"><br><span>气压</span><br>{{cityMain.pressure}}</div>
-                <div><img src="./../icon/uv.png"><br><span>紫外线</span><br>{{cityMain.uv}}</div>
+                <div><img src="./assets/humidity.png"><br><span>湿度</span><br>{{cityMain.humidity}}</div>
+                <div><img src="./assets/windSpeed.png"><br><span>风速</span><br>{{cityMain.windSpeed}}</div>
+                <div><img src="./assets/pressure.png"><br><span>气压</span><br>{{cityMain.pressure}}</div>
+                <div><img src="./assets/uv.png"><br><span>紫外线</span><br>{{cityMain.uv}}</div>
             </div>
         </div>
         <div class="fiveDaySimpleBox">
@@ -68,7 +68,9 @@
                         {{item.averageTemp}}
                     </div>
                     <div>
-                        <img :src="'./../icon/'+item.windDirectionIcon+'.png'">
+                        <img 
+                        :src ="require(`@/assets/${item.windDirectionIcon}.png`)"
+                        >
                     </div>
                     <div>
                         {{item.windSpeed}}
@@ -80,100 +82,99 @@
   </div>
 </template>
 
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-
+import axios from 'axios'
 export default {
     name: 'App',
     data(){
     return{
       searchCity:'',//搜索的城市
-        currentCity:'深圳',//当前城市
-        currentTime:'11:47',//当前时间
-        currentDate:'2024年8月5日',//当前日期
+        currentCity:'',//当前城市
+        currentTime:'',//当前时间
+        currentDate:'',//当前日期
         cityMain:{  //城市详细天气数据(最高温、最低温、日出时间、日落时间、湿度、气压、风速、紫外线、天气类型)
-            nowTemp:'24°C',
-            maxTemp:'100°C',
-            minTemp:'0°C',
-            sunRise:'8:00',
-            sunSet:'17:00',
-            humidity:'41%',
-            pressure:'997hPa',
-            windSpeed:'3km/h',
-            uv:'8',
-            weatherType:'晴',
-            weatherTypeIcon:'qi-100'
+            nowTemp:'',
+            maxTemp:'',
+            minTemp:'',
+            sunRise:'',
+            sunSet:'',
+            humidity:'',
+            pressure:'',
+            windSpeed:'',
+            uv:'',
+            weatherType:'',
+            weatherTypeIcon:''
         },
         fiveDayLike:[ //五天气候(类型、温度、星期)
             {
                 todayBefore:1,//一天之后
-                dayOfWeekCH:'星期天',
-                dayOfWeekEN:'Sunday',
-                averageTemp:'20°C',
+                dayOfWeekCH:'',
+                dayOfWeekEN:'',
+                averageTemp:'',
                 weatherType:'',
-                weatherIcon:'qi-100'
+                weatherIcon:''
             },
             {
                 todayBefore:2,//一天之后
-                dayOfWeekCH:'星期一',
-                dayOfWeekEN:'Monday',
-                averageTemp:'21°C',
+                dayOfWeekCH:'',
+                dayOfWeekEN:'',
+                averageTemp:'',
                 weatherType:'',
-                weatherIcon:'qi-100'
+                weatherIcon:''
             },
             {
                 todayBefore:3,//一天之后
-                dayOfWeekCH:'星期二',
-                dayOfWeekEN:'Tuesday',
-                averageTemp:'19°C',
+                dayOfWeekCH:'',
+                dayOfWeekEN:'',
+                averageTemp:'',
                 weatherType:'',
-                weatherIcon:'qi-100'
+                weatherIcon:''
             },
             {
                 todayBefore:4,//一天之后
-                dayOfWeekCH:'星期三',
-                dayOfWeekEN:'Wednesday',
-                averageTemp:'22°C',
+                dayOfWeekCH:'',
+                dayOfWeekEN:'',
+                averageTemp:'',
                 weatherType:'',
-                weatherIcon:'qi-100'
+                weatherIcon:''
             },
             {
                 todayBefore:5,//一天之后
-                dayOfWeekCH:'星期四',
-                dayOfWeekEN:'Thursday',
-                averageTemp:'23°C',
+                dayOfWeekCH:'',
+                dayOfWeekEN:'',
+                averageTemp:'',
                 weatherType:'',
-                weatherIcon:'qi-100'
+                weatherIcon:''
             }
         ],
         hourlyLike:[ //当天未来天气(类型、温度、时间、风向)
             {
-                time:'12:00',//三小时之后
-                averageTemp:'21°C',
-                weatherTypeIcon:'qi-100',
-                windDirectionIcon:'北风',
-                windSpeed:'3km/h'
+                time:'',//三小时之后
+                averageTemp:'',
+                weatherTypeIcon:'',
+                windDirectionIcon:'',
+                windSpeed:''
             },
             {
-                time:'15:00',//六小时之后
-                averageTemp:'21°C',
-                weatherTypeIcon:'qi-100',
-                windDirectionIcon:'北风',
-                windSpeed:'3km/h'
+                time:'',//六小时之后
+                averageTemp:'',
+                weatherTypeIcon:'',
+                windDirectionIcon:'',
+                windSpeed:''
             },
             {
-                time:'18:00',//九小时之后
-                averageTemp:'21°C',
-                weatherTypeIcon:'qi-100',
-                windDirectionIcon:'北风',
-                windSpeed:'3km/h'
+                time:'',//九小时之后
+                averageTemp:'',
+                weatherTypeIcon:'',
+                windDirectionIcon:'',
+                windSpeed:''
             },
             {
-                time:'21:00',//十二小时之后
-                averageTemp:'21°C',
-                weatherTypeIcon:'qi-100',
-                windDirectionIcon:'北风',
-                windSpeed:'3km/h'
+                time:'',//十二小时之后
+                averageTemp:'',
+                weatherTypeIcon:'',
+                windDirectionIcon:'',
+                windSpeed:''
             },
         ]
     }
@@ -185,7 +186,6 @@ export default {
         getWeatherMainByName(locationName){
             let locationId=0;
             const mykey='b38053db3dee4ae39586a04fbff4ff1c'
-            let that=this;
             axios({
                 method:'get',
                 url:'https://geoapi.qweather.com/v2/city/lookup',//根据城市名字查询城市id
@@ -319,7 +319,7 @@ export default {
             console.log(this.hourlyLike)
         },
     },
-    mounted() {
+    created() {
         const mykey='b38053db3dee4ae39586a04fbff4ff1c';
         let that=this;
         function showPositionAndWeather(position)
